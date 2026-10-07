@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ICT Club Checker - Candidate System</title>
+
+    <!-- PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js">
+    </script>
+
+    <style>
+        :root {
+            --bg-color: #050509;
+            --container-bg: #101015;
+            --border-color: #2a2a33;
+            --primary-glow: #00d2ff;
+            --secondary-glow: #3a7bd5;
+            --accent-color: #ffd700;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+
+            font-family:
+                'Segoe UI',
+                system-ui,
+                -apple-system,
+                sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            min-height: 100vh;
+
+            margin: 0;
+            padding: 20px;
+
+            overflow: hidden;
+
+            position: relative;
+        }
+
+
+        /* Background Glow */
+
+        body::before {
+            content: '';
+
+            position: absolute;
+
+            width: 350px;
+            height: 350px;
+
+            background:
+                linear-gradient(45deg,
+                    var(--primary-glow),
+                    var(--secondary-glow));
+
+            filter: blur(140px);
+
+            opacity: 0.25;
+
+            border-radius: 50%;
+
+            z-index: -1;
+        }
+
+
+        /* Main Container */
+
+        .container {
+            background-color: var(--container-bg);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 20px;
+
+            padding: 40px;
+
+            width: 380px;
+            max-width: 100%;
+
+            text-align: center;
+
+            box-shadow:
+                0 0 25px rgba(0, 210, 255, 0.2),
+                inset 0 0 15px rgba(0, 0, 0, 0.5);
+
+            position: relative;
+
+            z-index: 1;
+        }
+
+
+        /* Title */
+
+        h2 {
+            color: var(--accent-color);
+
+            letter-spacing: 2px;
+
+            margin:
+                0 0 5px 0;
+
+            font-size: 24px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* Subtitle */
+
+        .subtitle {
+            font-size: 10px;
+
+            color: var(--text-muted);
+
+            margin-bottom: 30px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+
+            font-weight: 300;
+        }
+
+
+        /* Input Groups */
+
+        .input-group {
+            margin-bottom: 22px;
+
+            text-align: left;
+        }
+
+
+        /* Labels */
+
+        label {
+            display: block;
+
+            font-size: 11px;
+
+            color: var(--primary-glow);
+
+            margin-bottom: 8px;
+
+            font-weight: bold;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        /* Text Inputs */
+
+        input {
+            width: 100%;
+
+            padding: 14px;
+
+            background-color: #050509;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 10px;
+
+            color: var(--text-main);
+
+            font-size: 15px;
+
+            transition:
+                border-color 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+
+        input:focus {
+            border-color: var(--primary-glow);
+
+            box-shadow:
+                0 0 10px rgba(0, 210, 255, 0.3);
+
+            outline: none;
+        }
+
+
+        input::placeholder {
+            color: #444;
+
+            font-style: italic;
+        }
+
+
+        /* Button */
+
+        button {
+            width: 100%;
+
+            padding: 15px;
+
+            background:
+                linear-gradient(135deg,
+                    #d90429,
+                    #ef233c);
+
+            color: white;
+
+            border: none;
+
+            border-radius: 10px;
+
+            font-weight: bold;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+
+            margin-top: 15px;
+
+            transition:
+                box-shadow 0.2s ease,
+                transform 0.1s ease;
+        }
+
+
+        button:hover {
+            box-shadow:
+                0 0 15px rgba(239, 35, 60, 0.5);
+        }
+
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+
+        /* Result */
+
+        #result-area {
+            margin-top: 30px;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            background-color:
+                rgba(0, 210, 255, 0.05);
+
+            border: 1px solid var(--border-color);
+
+            color: #e2e8f0;
+
+            min-height: 70px;
+
+            word-break: break-word;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-weight: 500;
+        }
+
+
+        #result-area.has-result {
+            border-color:
+                var(--primary-glow);
+
+            color:
+                var(--primary-glow);
+
+            text-shadow:
+                0 0 5px rgba(0, 210, 255, 0.5);
+        }
+
+
+        /* Success */
+
+        #result-area.success {
+            border-color: #00ff88;
+
+            color: #00ff88;
+
+            text-shadow:
+                0 0 5px rgba(0, 255, 136, 0.5);
+        }
+
+
+        /* Error */
+
+        #result-area.error {
+            border-color: #ff4757;
+
+            color: #ff4757;
+
+            text-shadow:
+                0 0 5px rgba(255, 71, 87, 0.5);
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 480px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 30px 25px;
+            }
+
+            h2 {
+                font-size: 21px;
+            }
+
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h2>ICT Club Checker</h2>
+
+        <div class="subtitle">
+            Candidate Verification System
+        </div>
+
+
+        <!-- First Name -->
+
+        <div class="input-group">
+
+            <label for="first-name">
+                First Name
+            </label>
+
+            <input type="text" id="first-name" placeholder="e.g. Kathryn" autocomplete="off">
+
+        </div>
+
+
+        <!-- Last Name -->
+
+        <div class="input-group">
+
+            <label for="last-name">
+                Last Name
+            </label>
+
+            <input type="text" id="last-name" placeholder="e.g. Bernardo" autocomplete="off">
+
+        </div>
+
+
+        <!-- Verify Button -->
+
+        <button id="verify-btn" py-click="verify_candidate">
+            Verify Status
+        </button>
+
+
+        <!-- Result -->
+
+        <div id="result-area">
+            Awaiting input...
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- PYTHON / PYSCRIPT CODE        -->
+    <!-- ============================= -->
+
+    <script type="py">
+
+        from pyscript import document
+
+
+        # ==========================================
+        # ICT CLUB MEMBER LIST
+        # ==========================================
+
+        CLUB_MEMBERS = [
+
+            "Kathryn Bernardo",
+            "Daniel Padilla",
+            "Alden Richards",
+            "Maine Mendoza",
+            "Marian Rivera",
+            "Dingdong Dantes",
+            "Anne Curtis",
+            "Erwan Heussaff",
+            "Sarah Geronimo",
+            "Matteo Guidicelli",
+            "Kim Chiu",
+            "Paulo Avelino",
+            "Nadine Lustre",
+            "James Reid",
+            "Liza Soberano",
+            "Enrique Gil",
+            "Bea Alonzo",
+            "Gerald Anderson",
+            "Julia Barretto",
+            "Joshua Garcia",
+            "Andrea Brillantes",
+            "Francine Diaz",
+            "Seth Fedelin",
+            "Donny Pangilinan",
+            "Belle Mariano",
+            "Anthony Jennings",
+            "Coco Martin",
+            "Julia Montes",
+            "Piolo Pascual",
+            "Judy Ann Santos",
+            "Ryan Agoncillo",
+            "Vice Ganda",
+            "Jhong Hilario",
+            "Billy Crawford",
+            "Luis Manzano",
+            "Toni Gonzaga",
+            "Alex Gonzaga",
+            "Vhong Navarro",
+            "Robin Padilla",
+            "Bea Binene",
+            "Angel Locsin",
+            "Angelica Panganiban",
+            "Iza Calzado",
+            "Carla Abellana",
+            "Jennylyn Mercado",
+            "Dennis Trillo",
+            "Tom Rodriguez",
+            "Jericho Rosales",
+            "Carlo Aquino",
+            "Alessandra De Rossi",
+            "Arjo Atayde",
+            "Ria Atayde",
+            "Sharon Cuneta",
+            "Regine Velasquez",
+            "Ogie Alcasid",
+            "Gary Valenciano",
+            "Rico Blanco",
+            "Lea Salonga"
+
+        ]
+
+
+       
+
+        NORMALIZED_MEMBERS = {
+
+            member.lower().strip()
+
+            for member in CLUB_MEMBERS
+
+        }
+
+ 
+
+        def get_candidate_name():
+
+            first_name = document.querySelector(
+                "#first-name"
+            ).value.strip()
+
+            last_name = document.querySelector(
+                "#last-name"
+            ).value.strip()
+
+
+            return f"{first_name} {last_name}"
+
+ 
+
+        def build_response_messages(
+            candidate_name,
+            is_member
+        ):
+
+            if is_member:
+
+                return (
+                    f"Congratulations {candidate_name}! "
+                    "You are now part of the ICT club."
+                )
+
+            else:
+
+                return (
+                    f"Sorry {candidate_name}, "
+                    "your name is not on the list."
+                )
+
+
+        def verify_candidate(event):
+
+        
+            full_name = get_candidate_name()
+
+ 
+            output_div = document.querySelector(
+                "#result-area"
+            )
+
+
+           
+            output_div.classList.remove(
+                "has-result",
+                "success",
+                "error"
+            )
+
+
+            first_name = document.querySelector(
+                "#first-name"
+            ).value.strip()
+
+            last_name = document.querySelector(
+                "#last-name"
+            ).value.strip()
+
+
+            if first_name == "" and last_name == "":
+
+                output_div.innerText = (
+                    "Please enter your first name "
+                    "and last name."
+                )
+
+                output_div.classList.add("error")
+
+                return
+
+
+            if first_name == "":
+
+                output_div.innerText = (
+                    "Please enter your first name."
+                )
+
+                output_div.classList.add("error")
+
+                return
+
+
+            if last_name == "":
+
+                output_div.innerText = (
+                    "Please enter your last name."
+                )
+
+                output_div.classList.add("error")
+
+                return
+
+
+            normalized_query = (
+                full_name.lower().strip()
+            )
+
+            is_member = (
+                normalized_query
+                in NORMALIZED_MEMBERS
+            )
+
+            result_message = (
+                build_response_messages(
+                    full_name,
+                    is_member
+                )
+            )
+
+            output_div.innerText = result_message
+
+            output_div.classList.add(
+                "has-result"
+            )
+
+
+            if is_member:
+
+                output_div.classList.add(
+                    "success"
+                )
+
+            else:
+
+                output_div.classList.add(
+                    "error"
+                )
+
+    </script>
+
+</body>
+
+</html>
